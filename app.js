@@ -12,9 +12,11 @@ var cors = require('cors');
 require('dotenv').config({ path: '.env' });
 require('./auth/auth');
 require('./config/db');
+
 // Routes
 var authRouter = require('./routes/auth');
 var indexRouter = require('./routes/index');
+var leaveRouter = require('./routes/leave');
 // var usersRouter = require('./routes/user');
 
 var app = express();
@@ -36,7 +38,9 @@ app.use(cors());
 // Routes
 app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
+app.use('/leaves', leaveRouter);
 // app.use('/user', usersRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

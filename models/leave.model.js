@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const leaveSchema = new schema(
   {
     onBehalfLeave: { type: Boolean, default: false },
-    leaveType: { type: String, required: true },
+    leaveType: { type: String, enum: ['Annual', 'Casual', 'Sick'], required: true },
     currentBalance: { type: Number, required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },

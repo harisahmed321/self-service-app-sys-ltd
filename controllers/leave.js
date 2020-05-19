@@ -83,7 +83,7 @@ leavesByEmployee = (req, res, next) => {
 
   LeaveModel.aggregate(
     [
-      { 
+      {
         $match : { user: mongoose.Types.ObjectId(userId) } 
       },
       // { $sort : { date : 1 } }, // Sorts the records wrt to date in ascending order

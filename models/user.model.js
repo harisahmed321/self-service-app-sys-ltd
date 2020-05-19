@@ -26,6 +26,9 @@ const userSchema = new mongoose.Schema(
     bloodGroup: { type: String },
     isBlocked: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+    annualLeaves: { type: Number, default: 12 },
+    casualLeaves: { type: Number, default: 10 },
+    sickLeaves: { type: Number, default: 10 }
   },
   { timestamps: true }
 );

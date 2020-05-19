@@ -15,4 +15,10 @@ router.get(
   leaveCtrl.leavesByEmployee
 );
 
+router.get(
+  '/getLeavesQuota', 
+  passport.authenticate('jwt', { session: false }), 
+  leaveCtrl.getLeavesQuota
+);
+
 module.exports = router;

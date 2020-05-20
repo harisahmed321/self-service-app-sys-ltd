@@ -9,7 +9,7 @@ const loggerJs = require('./helpers/logger');
 var cors = require('cors');
 
 // Helpers
-require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: '.env.prod' });
 require('./auth/auth');
 require('./config/db');
 
@@ -61,7 +61,9 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(process.env.PORT || 8080, () => {
-  console.log(`Server running at http://localhost:${process.env.PORT || 8080}/`);
+  console.log(
+    `Server running at http://localhost:${process.env.PORT || 8080}/`
+  );
 });
 
 module.exports = app;

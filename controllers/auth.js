@@ -1,4 +1,5 @@
 const UserModel = require('../models/user.model');
+const QuotaModel = require('../models/quota.model');
 const jwt = require('jsonwebtoken');
 
 login = async (req, res, next) => {
@@ -55,18 +56,32 @@ userRegistration = (req, res, next) => {
     address,
     bloodGroup,
   });
+
   user
     .save()
     .then((user) => {
-      console.log(user);
       const token = generateToken(user);
       user.password = '';
       const result = { token, user };
+      addQuota(result);
+    })
+    .catch((error) => {
+      next(error);
+    });
+
+  const addQuota = (result) => {
+    const quota = new QuotaModel();
+    quota.userId = result.user._id;
+
+    quota
+    .save()
+    .then((qt) => {
       res.status(200).send({ result, message: 'Registration successful' });
     })
     .catch((error) => {
       next(error);
     });
+  }
 };
 
 generateToken = (user) => {

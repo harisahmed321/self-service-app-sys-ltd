@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
   jwt = require('jsonwebtoken')
   LeaveModel = require('../models/leave.model')
-  UserModel = require('../models/user.model');
+  UserModel = require('../models/user.model')
+  QuotaModel = require('../models/quota.model');
 const { success, failure } = require('../helpers/response');
 
 
@@ -132,8 +133,8 @@ leavesByEmployee = (req, res, next) => {
 getLeavesQuota = (req, res, next) => {
   const userId = fetchUserId(req.headers.authorization);
 
-  UserModel
-    .findOne({ _id: mongoose.Types.ObjectId(userId) })
+  QuotaModel
+    .findOne({ userId: mongoose.Types.ObjectId(userId) })
     .select('annualLeaves casualLeaves sickLeaves')
     .then(resp => {
       let respFormat = [

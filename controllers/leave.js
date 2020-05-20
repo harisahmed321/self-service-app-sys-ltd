@@ -35,7 +35,7 @@ addRequest = (req, res, next) => {
     QuotaModel
     .findOne({ userId: mongoose.Types.ObjectId(userId) })
     .then(quota => {
-      
+
       QuotaModel.findOneAndUpdate(
         { userId: mongoose.Types.ObjectId(userId) },
         {
@@ -49,7 +49,7 @@ addRequest = (req, res, next) => {
           if (err)
             next(error);
           else
-            res.status(200).send(success(leave, 'Leave request added successfully'));
+            res.status(200).send(success("", 'Leave request added successfully'));
         }
       )
     })

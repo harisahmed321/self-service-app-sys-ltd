@@ -7,45 +7,20 @@ const { success, failure } = require('../helpers/response');
 
 
 addRequest = (req, res, next) => {
-  const {
-    onBehalfLeave,
-    leaveType,
-    currentBalance,
-    startDate,
-    endDate,
-    remainingBalance,
-    dutyResumptionDate,
-    actingEmployee,
-    comments,
-    exitPermitRequired,
-    // attachment
-  } = req.body;
 
-  const userId = fetchUserId(req.headers.authorization);
+  req.body.user = process.env.userId;
 
-  let requestType = '';
-  if (leaveType == 'Annual') {
-    requestType = 'ANNUAL_LEAVE_REQUEST';
-  } else if (leaveType == 'Casual') {
-    requestType = 'CASUAL_LEAVE_REQUEST';
-  } else if (leaveType == 'Sick') {
-    requestType = 'SICK_LEAVE_REQUEST';
+  if (req.body.leaveType == 'Annual') {
+    req.body.requestType = 'ANNUAL_LEAVE_REQUEST';
+  } else if (req.body.leaveType == 'Casual') {
+    req.body.requestType = 'CASUAL_LEAVE_REQUEST';
+  } else if (req.body.leaveType == 'Sick') {
+    req.body.requestType = 'SICK_LEAVE_REQUEST';
   }
 
-  const leave = new LeaveModel({
-    onBehalfLeave,
-    leaveType,
-    currentBalance,
-    startDate,
-    endDate,
-    remainingBalance,
-    dutyResumptionDate,
-    actingEmployee,
-    comments,
-    exitPermitRequired,
-    user: userId,
-    requestType
-  });
+  delete[req.body.attachment]; // temporarily for attachments
+
+  const leave = new LeaveModel(req.body);
 
   leave
     .save()
@@ -60,13 +35,14 @@ addRequest = (req, res, next) => {
     QuotaModel
     .findOne({ userId: mongoose.Types.ObjectId(userId) })
     .then(quota => {
+      
       QuotaModel.findOneAndUpdate(
         { userId: mongoose.Types.ObjectId(userId) },
         {
           $set: {
-            annualLeaves: leaveType == 'Annual' ? remainingBalance : quota.annualLeaves,
-            casualLeaves: leaveType == 'Casual' ? remainingBalance : quota.casualLeaves,
-            sickLeaves: leaveType == 'Sick' ? remainingBalance : quota.sickLeaves,
+            annualLeaves: req.body.leaveType == 'Annual' ? req.body.remainingBalance : quota.annualLeaves,
+            casualLeaves: req.body.leaveType == 'Casual' ? req.body.remainingBalance : quota.casualLeaves,
+            sickLeaves: req.body.leaveType == 'Sick' ? req.body.remainingBalance : quota.sickLeaves,
           }
         }
         ,(err) => {
@@ -86,7 +62,7 @@ addRequest = (req, res, next) => {
 
 
 leavesByEmployee = (req, res, next) => {
-  const userId = fetchUserId(req.headers.authorization);
+  const userId = process.env.userId;
 
   LeaveModel.aggregate(
     [
@@ -136,7 +112,7 @@ leavesByEmployee = (req, res, next) => {
 
 
 getLeavesQuota = (req, res, next) => {
-  const userId = fetchUserId(req.headers.authorization);
+  const userId = process.env.userId;
 
   QuotaModel
     .findOne({ userId: mongoose.Types.ObjectId(userId) })
@@ -154,11 +130,5 @@ getLeavesQuota = (req, res, next) => {
     });
 }
 
-
-fetchUserId = (auth) => {
-  const token = auth.split(' ')[1];
-  const decoded = jwt.verify(token, process.env.JWT_Secret_Key);
-  return decoded.user._id;
-}
 
 module.exports = { addRequest, leavesByEmployee, getLeavesQuota };

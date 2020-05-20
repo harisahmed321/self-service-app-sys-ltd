@@ -18,6 +18,7 @@ var authRouter = require('./routes/auth');
 var indexRouter = require('./routes/index');
 var leaveRouter = require('./routes/leave');
 var usersRouter = require('./routes/user');
+var airTicketRouter = require('./routes/air-ticket');
 
 var app = express();
 
@@ -40,6 +41,7 @@ app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/leaves', leaveRouter);
 app.use('/api/user', usersRouter);
+app.use('/api/air-ticket', airTicketRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

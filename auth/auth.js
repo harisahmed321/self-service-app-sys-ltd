@@ -8,13 +8,12 @@ const UserModel = require('../models/user.model');
 passport.use(
   new JWTstrategy(
     {
-      //secret we used to sign our JWT
       secretOrKey: process.env.JWT_Secret_Key,
-      //we expect the user to send the token as a query parameter with the name 'secret_token'
       jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     },
     async (token, done) => {
       try {
+        process.env.userId = token.user._id;
         return done(null, token.user);
       } catch (error) {
         done(error);

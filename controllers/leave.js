@@ -16,14 +16,21 @@ addRequest = (req, res, next) => {
     remainingBalance,
     dutyResumptionDate,
     actingEmployee,
-    // expectedDutyResumptionDate,
-    // annualDutyResumptionDate,
     comments,
     exitPermitRequired,
     // attachment
   } = req.body;
 
   const userId = fetchUserId(req.headers.authorization);
+
+  let requestType = '';
+  if (leaveType == 'Annual') {
+    requestType = 'ANNUAL_LEAVE_REQUEST';
+  } else if (leaveType == 'Casual') {
+    requestType = 'CASUAL_LEAVE_REQUEST';
+  } else if (leaveType == 'Sick') {
+    requestType = 'SICK_LEAVE_REQUEST';
+  }
 
   const leave = new LeaveModel({
     onBehalfLeave,
@@ -34,33 +41,32 @@ addRequest = (req, res, next) => {
     remainingBalance,
     dutyResumptionDate,
     actingEmployee,
-    // expectedDutyResumptionDate,
-    // annualDutyResumptionDate,
     comments,
     exitPermitRequired,
-    user: userId
+    user: userId,
+    requestType
   });
 
   leave
     .save()
     .then((resp) => {
-      updateUserQuota(resp);
+      updateLeaveQuota(resp);
     })
     .catch((error) => {
       next(error);
     });
 
-  const updateUserQuota = (leave) => {
-    UserModel
-    .findOne({ _id: mongoose.Types.ObjectId(userId) })
-    .then(user => {
-      UserModel.findOneAndUpdate(
-        { _id: mongoose.Types.ObjectId(userId) },
+  const updateLeaveQuota = (leave) => {
+    QuotaModel
+    .findOne({ userId: mongoose.Types.ObjectId(userId) })
+    .then(quota => {
+      QuotaModel.findOneAndUpdate(
+        { userId: mongoose.Types.ObjectId(userId) },
         {
           $set: {
-            annualLeaves: leaveType == 'Annual' ? remainingBalance : user.annualLeaves,
-            casualLeaves: leaveType == 'Casual' ? remainingBalance : user.casualLeaves,
-            sickLeaves: leaveType == 'Sick' ? remainingBalance : user.sickLeaves,
+            annualLeaves: leaveType == 'Annual' ? remainingBalance : quota.annualLeaves,
+            casualLeaves: leaveType == 'Casual' ? remainingBalance : quota.casualLeaves,
+            sickLeaves: leaveType == 'Sick' ? remainingBalance : quota.sickLeaves,
           }
         }
         ,(err) => {
@@ -96,8 +102,6 @@ leavesByEmployee = (req, res, next) => {
           startDate: { $dateToString: { format: "%d-%m-%Y", date: "$startDate" } },
           endDate: { $dateToString: { format: "%d-%m-%Y", date: "$endDate" } },
           dutyResumptionDate: { $dateToString: { format: "%d-%m-%Y", date: "$dutyResumptionDate" } },
-          // expectedDutyResumptionDate: { $dateToString: { format: "%d-%m-%Y", date: "$expectedDutyResumptionDate" } },
-          // annualDutyResumptionDate: { $dateToString: { format: "%d-%m-%Y", date: "$annualDutyResumptionDate" } },
           remainingBalance: 1,
           actingEmployee: 1,
           comments: 1,
@@ -105,7 +109,8 @@ leavesByEmployee = (req, res, next) => {
           status: 1,
           workflowStatus: 1,
           attachment: 1,
-          user: 1
+          user: 1,
+          requestType: 1
         }
       }
     ]

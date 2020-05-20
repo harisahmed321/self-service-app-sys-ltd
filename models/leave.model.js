@@ -11,14 +11,21 @@ const leaveSchema = new schema(
     remainingBalance: { type: Number, required: true },
     dutyResumptionDate: { type: Date, required: true },
     actingEmployee: { type: String, required: true },
-    // expectedDutyResumptionDate: { type: Date, required: true },
-    // annualDutyResumptionDate: { type: Date, required: true },
     comments: { type: String, default: '' },
     exitPermitRequired: { type: Boolean, default: false },
     attachment: { type: String },
-    status: { type: String, enum: ['SUBMITTED', 'APPROVED'], default: 'APPROVED' },
+    user: { type : schema.Types.ObjectId, ref : 'User', required : true },
     workflowStatus: { type: String, default: 'Line Manager Approved' },
-    user: { type : schema.Types.ObjectId, ref : 'User', required : true }
+    status: { 
+      type: String,
+      enum: ['SUBMITTED', 'ACQUIRED'],
+      default: 'ACQUIRED'
+    },
+    requestType: { 
+      type: String,
+      enum: ['ANNUAL_LEAVE_REQUEST', 'CASUAL_LEAVE_REQUEST', 'SICK_LEAVE_REQUEST'],
+      required: true
+    }
   },
   { timestamps: true }
 );

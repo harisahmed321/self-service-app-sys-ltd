@@ -9,13 +9,13 @@ const loggerJs = require('./helpers/logger');
 var cors = require('cors');
 
 // Helpers
-require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: '.env.prod' });
 require('./auth/auth');
 require('./config/db');
 // Routes
 var authRouter = require('./routes/auth');
 var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/user');
+var usersRouter = require('./routes/user');
 
 var app = express();
 
@@ -36,7 +36,7 @@ app.use(cors());
 // Routes
 app.use('/', indexRouter);
 app.use('/api/auth', authRouter);
-// app.use('/user', usersRouter);
+app.use('/api/user', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

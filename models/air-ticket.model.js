@@ -13,6 +13,16 @@ const airTicketSchema = new mongoose.Schema(
       fileName: { type: String },
       fileType: { type: String },
     },
+    status: {
+      type: String,
+      enum: ['SUMITTED', 'ACQUIRED'],
+      default: 'ACQUIRED',
+    },
+    requestType: {
+      type: String,
+      enum: ['AIR_TICKET_REQUEST'],
+      default: 'AIR_TICKET_REQUEST',
+    },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

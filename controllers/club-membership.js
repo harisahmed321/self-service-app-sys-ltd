@@ -3,9 +3,9 @@ const { success, failure } = require('../helpers/response');
 
 addRequest = (req, res, next) => {
   req.body.userId = process.env.userId;
-  // 
+  // temporarily
   delete[req.body.attachment];
-  
+
   const clubMembership = new ClubMembershipModel(req.body);
 
   clubMembership

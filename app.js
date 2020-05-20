@@ -49,7 +49,7 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
   // console.log('error', err);
-  // loggerJs.error(err, req, res);
+  loggerJs.error(err, req, res);
   // res.locals.message = err.message;
   // res.locals.error = req.app.get('env') === 'development' ? err : {};
   // // render the error page
@@ -60,8 +60,9 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.listen((port = 8080), () => {
-  console.log(`Server running at http://localhost:${port}/`);
+app.listen(() => {
+  const API_PORT = process.env.PORT || 8080;
+  console.log(`Server running at http://localhost:${API_PORT}/`);
 });
 
 module.exports = app;

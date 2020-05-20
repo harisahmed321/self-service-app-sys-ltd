@@ -9,7 +9,7 @@ const loggerJs = require('./helpers/logger');
 var cors = require('cors');
 
 // Helpers
-require('dotenv').config({ path: '.env.prod' });
+require('dotenv').config({ path: '.env' });
 require('./auth/auth');
 require('./config/db');
 

@@ -7,8 +7,8 @@ const { success, failure } = require('../helpers/response');
 
 
 addRequest = (req, res, next) => {
-
-  req.body.user = process.env.userId;
+  const userId = process.env.userId;
+  req.body.userId = userId;
 
   if (req.body.leaveType == 'Annual') {
     req.body.requestType = 'ANNUAL_LEAVE_REQUEST';
@@ -85,7 +85,7 @@ leavesByEmployee = (req, res, next) => {
           status: 1,
           workflowStatus: 1,
           attachment: 1,
-          user: 1,
+          userId: 1,
           requestType: 1
         }
       }
@@ -94,7 +94,7 @@ leavesByEmployee = (req, res, next) => {
     LeaveModel.populate(
       result, 
       {
-        path: "user",
+        path: "userId",
         select: {
           role: 1,
           email: 1,

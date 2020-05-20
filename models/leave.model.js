@@ -14,7 +14,7 @@ const leaveSchema = new schema(
     comments: { type: String, default: '' },
     exitPermitRequired: { type: Boolean, default: false },
     attachment: { type: String },
-    user: { type : schema.Types.ObjectId, ref : 'User', required : true },
+    userId: { type : schema.Types.ObjectId, ref : 'User', required : true },
     workflowStatus: { type: String, default: 'Line Manager Approved' },
     status: { 
       type: String,
@@ -25,7 +25,8 @@ const leaveSchema = new schema(
       type: String,
       enum: ['ANNUAL_LEAVE_REQUEST', 'CASUAL_LEAVE_REQUEST', 'SICK_LEAVE_REQUEST'],
       required: true
-    }
+    },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

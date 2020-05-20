@@ -1,18 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+  schema = mongoose.Schema;
 
-const airTicketSchema = new mongoose.Schema(
+const clubMembershipSchema = new schema(
   {
     userId: { type: schema.Types.ObjectId, ref: 'User', required: true },
     requestedDate: { type: Date, required: true },
+    membershipStartDate: { type: Date, required: true },
     allowanceAmountLimit: { type: Number },
     consumedAmountLimit: { type: Number },
     requestedAmount: { type: Number },
     comment: { type: String },
-    attachment: {
-      baseString: { type: String },
-      fileName: { type: String },
-      fileType: { type: String },
-    },
+    attachment: { type: String },
+    workflowStatus: { type: String, default: 'Line Manager Approved' },
     status: {
       type: String,
       enum: ['SUBMITTED', 'ACQUIRED'],
@@ -20,14 +19,13 @@ const airTicketSchema = new mongoose.Schema(
     },
     requestType: {
       type: String,
-      enum: ['AIR_TICKET_REQUEST'],
-      default: 'AIR_TICKET_REQUEST',
+      enum: ['CLUB_MEMBERSHIP_ALLOWANCE_REQUEST'],
+      default: 'CLUB_MEMBERSHIP_ALLOWANCE_REQUEST',
     },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-const AirTicket = mongoose.model('AirTicket', airTicketSchema);
 
-module.exports = AirTicket;
+module.exports = mongoose.model('clubMembership', clubMembershipSchema);

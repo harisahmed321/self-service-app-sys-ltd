@@ -4,7 +4,7 @@ const passport = require('passport');
 const leaveCtrl = require('../controllers/leave');
 
 router.post(
-  '/addRequest', 
+  '/', 
   passport.authenticate('jwt', { session: false }), 
   leaveCtrl.addRequest
 );

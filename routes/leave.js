@@ -10,9 +10,15 @@ router.post(
 );
 
 router.get(
-  '/leavesByEmployee', 
+  '/byEmployee', 
   passport.authenticate('jwt', { session: false }), 
   leaveCtrl.leavesByEmployee
+);
+
+router.get(
+  '/byManager', 
+  passport.authenticate('jwt', { session: false }), 
+  leaveCtrl.leavesByTeam
 );
 
 router.get(

@@ -9,7 +9,7 @@ addRequest = (req, res, next) => {
     .save()
     .then((resp) => {
       addAttachment(resp);
-      res.status(200).send(success("", "Club membership allowance request created successfully"));
+      res.status(200).send(success(resp, "Club membership allowance request created successfully"));
     })
     .catch((error) => {
       next(error);

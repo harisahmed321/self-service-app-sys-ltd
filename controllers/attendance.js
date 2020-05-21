@@ -65,8 +65,59 @@ attendanceByEmployee = (req, res, next) => {
 
 
 attendanceByTeam = (req, res, next) => {
+  const managerId = process.env.userId;
 
-  // req.body.date
+  if (!req.body.date || req.body.date == '' || req.body.date == null) {
+    res.status(400).send(failure('Date is required'));
+  } else {
+    TeamManagementModel.find({ managerId })
+    .then((result) => {
+      let empIds = [];
+      result.forEach(element => {
+        empIds.push(mongoose.Types.ObjectId(element.empId));
+      });
+      fetchAttendance(empIds);
+    })
+    .catch((error) => next(error));
+  }
+
+  const fetchAttendance = (ids) => {
+    AttendanceModel.aggregate(
+      [
+        {
+          $match : {
+            userId: { $in : ids },
+            date : new Date(req.body.date)
+          }
+        },
+        {
+          $project : {
+            timeIn: 1,
+            timeOut: 1,
+            userId: 1,
+            date: { $dateToString: { format: "%d-%m-%Y", date: "$date" } }
+          }
+        }
+      ]
+    ).then(result => {
+      AttendanceModel.populate(
+        result, 
+        {
+          path: "userId",
+          select: {
+            role: 1,
+            email: 1,
+            firstName: 1,
+            lastName: 1,
+            designation: 1
+          }
+        }
+      ).then(popl => {
+        res.status(200).send(success(popl, 'success'));
+      })
+    })
+  }
+  
 }
 
 

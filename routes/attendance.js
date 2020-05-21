@@ -16,7 +16,7 @@ router.get(
 );
 
 router.post(
-  '/byTeam', 
+  '/byManager', 
   passport.authenticate('jwt', { session: false }), 
   attendanceCtrl.attendanceByTeam
 );

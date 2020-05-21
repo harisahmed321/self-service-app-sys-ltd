@@ -10,17 +10,16 @@ const clubMembershipSchema = new schema(
     consumedAmountLimit: { type: Number },
     requestedAmount: { type: Number },
     comment: { type: String },
-    attachment: { type: String },
     workflowStatus: { type: String, default: 'Line Manager Approved' },
     status: {
       type: String,
       enum: ['SUBMITTED', 'ACQUIRED'],
-      default: 'ACQUIRED',
+      default: 'ACQUIRED'
     },
     requestType: {
       type: String,
       enum: ['CLUB_MEMBERSHIP_ALLOWANCE_REQUEST'],
-      default: 'CLUB_MEMBERSHIP_ALLOWANCE_REQUEST',
+      default: 'CLUB_MEMBERSHIP_ALLOWANCE_REQUEST'
     },
     isActive: { type: Boolean, default: true },
   },
@@ -28,4 +27,4 @@ const clubMembershipSchema = new schema(
 );
 
 
-module.exports = mongoose.model('clubMembership', clubMembershipSchema);
+module.exports = mongoose.model('club-membership', clubMembershipSchema);

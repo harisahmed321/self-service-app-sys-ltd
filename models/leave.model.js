@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
   schema = mongoose.Schema;
 
-const leaveSchema = new schema(
+const leaveSchema = new schema (
   {
     onBehalfLeave: { type: Boolean, default: false },
     leaveType: { type: String, enum: ['Annual', 'Casual', 'Sick'], required: true },
@@ -13,7 +13,6 @@ const leaveSchema = new schema(
     actingEmployee: { type: String, required: true },
     comments: { type: String, default: '' },
     exitPermitRequired: { type: Boolean, default: false },
-    attachment: { type: String },
     userId: { type : schema.Types.ObjectId, ref : 'User', required : true },
     workflowStatus: { type: String, default: 'Line Manager Approved' },
     status: { 
@@ -31,4 +30,4 @@ const leaveSchema = new schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Leave', leaveSchema);
+module.exports = mongoose.model('leave', leaveSchema);

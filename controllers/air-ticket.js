@@ -13,6 +13,7 @@ create = (req, res, next) => {
         fileName: req.body.attachment.fileName,
         fileType: req.body.attachment.fileType,
         baseString: req.body.attachment.baseString,
+        requestType: 'AIR_TICKET_REQUEST'
       };
       attachmentCtrl.create(data);
       res.status(200).send({ message: 'Air ticket created' });

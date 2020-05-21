@@ -5,15 +5,18 @@ const { logger } = require('../helpers/logger');
 
 create = (req) => {
   try {
-    const { userId, requestId, fileName, fileType, baseString } = req;
+    const { userId, requestId, fileName, fileType, baseString, requestType } = req;
     const uuidFileName = `${uuidv4()}.${fileType}`;
+    
     const attachment = new AttachmentModel({
       userId,
       requestId,
       uuidFileName,
       fileName,
       fileType,
+      requestType
     });
+
     fs.writeFile(
       `./uploads/${uuidFileName}`,
       baseString,

@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
   LeaveModel = require('../models/leave.model')
   UserModel = require('../models/user.model')
   QuotaModel = require('../models/quota.model');
+  attachmentCtrl = require('../controllers/attachment');
 const { success, failure } = require('../helpers/response');
 
 
@@ -18,18 +19,33 @@ addRequest = (req, res, next) => {
     req.body.requestType = 'SICK_LEAVE_REQUEST';
   }
 
-  delete[req.body.attachment]; // temporarily for attachments
-
   const leave = new LeaveModel(req.body);
-
   leave
     .save()
     .then((resp) => {
+      addAttachment(resp);
       updateLeaveQuota(resp);
     })
     .catch((error) => {
       next(error);
     });
+
+  const addAttachment = (leave) => {
+    if (req.body.attachment != null) {
+      const data = {
+        userId: userId,
+        requestId: leave._id,
+        fileName: req.body.attachment.fileName,
+        fileType: req.body.attachment.fileType,
+        baseString: req.body.attachment.baseString,
+        requestType: req.body.requestType
+      };
+      attachmentCtrl.create(data);
+      return;
+    } else {
+      return;
+    }
+  }
 
   const updateLeaveQuota = (leave) => {
     QuotaModel
@@ -49,7 +65,7 @@ addRequest = (req, res, next) => {
           if (err)
             next(error);
           else
-            res.status(200).send(success("", 'Leave request added successfully'));
+            res.status(200).send(success(leave, 'Leave request added successfully'));
         }
       )
     })
@@ -67,11 +83,11 @@ leavesByEmployee = (req, res, next) => {
   LeaveModel.aggregate(
     [
       {
-        $match : { user: mongoose.Types.ObjectId(userId) } 
+        $match : { user: mongoose.Types.ObjectId(userId) }
       },
       // { $sort : { date : 1 } }, // Sorts the records wrt to date in ascending order
-      { $project : 
-        {
+      {
+        $project : {
           onBehalfLeave: 1,
           leaveType: 1,
           currentBalance: 1,

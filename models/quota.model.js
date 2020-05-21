@@ -11,4 +11,4 @@ const quotaSchema = new schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Quota', quotaSchema);
+module.exports = mongoose.model('quota', quotaSchema);

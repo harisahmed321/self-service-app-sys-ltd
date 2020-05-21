@@ -8,10 +8,6 @@ const airTicketSchema = new mongoose.Schema(
     consumedAmountLimit: { type: Number },
     requestedAmount: { type: Number },
     comment: { type: String },
-    attachment: {
-      fileName: { type: String },
-      fileUrl: { type: String },
-    },
     workflowStatus: { type: String, default: 'Line Manager Approved' },
     status: {
       type: String,
@@ -23,11 +19,11 @@ const airTicketSchema = new mongoose.Schema(
       enum: ['AIR_TICKET_REQUEST'],
       default: 'AIR_TICKET_REQUEST',
     },
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
 );
 
-const AirTicket = mongoose.model('AirTicket', airTicketSchema);
+const AirTicket = mongoose.model('air-ticket', airTicketSchema);
 
 module.exports = AirTicket;

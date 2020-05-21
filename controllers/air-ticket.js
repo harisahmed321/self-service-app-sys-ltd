@@ -1,14 +1,20 @@
 const AirTicketModel = require('../models/air-ticket.model');
-const passport = require('passport');
-const JWTstrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
-
+const attachmentCtrl = require('../controllers/attachment');
 create = (req, res, next) => {
   req.body.userId = process.env.userId;
+
   const airTicket = new AirTicketModel(req.body);
   airTicket
     .save()
-    .then(() => {
+    .then((result) => {
+      const data = {
+        userId: req.body.userId,
+        requestId: result._id,
+        fileName: req.body.attachment.fileName,
+        fileType: req.body.attachment.fileType,
+        baseString: req.body.attachment.baseString,
+      };
+      attachmentCtrl.create(data);
       res.status(200).send({ message: 'Air ticket created' });
     })
     .catch((error) => {

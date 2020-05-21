@@ -13,8 +13,7 @@ const logger = log4js.getLogger('SS');
 error = (err, req, res) => {
   const log = `[${req.method}] ${req.url} [body] ${JSON.stringify(req.body)}
   [Message] ${err.message}`;
-  //   console.log(log);
   logger.error(log);
 };
 
-module.exports = { error };
+module.exports = { error, logger };

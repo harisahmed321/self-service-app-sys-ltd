@@ -9,10 +9,10 @@ const airTicketSchema = new mongoose.Schema(
     requestedAmount: { type: Number },
     comment: { type: String },
     attachment: {
-      baseString: { type: String },
       fileName: { type: String },
-      fileType: { type: String },
+      fileUrl: { type: String },
     },
+    workflowStatus: { type: String, default: 'Line Manager Approved' },
     status: {
       type: String,
       enum: ['SUBMITTED', 'ACQUIRED'],

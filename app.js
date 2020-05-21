@@ -20,7 +20,7 @@ var leaveRouter = require('./routes/leave');
 var usersRouter = require('./routes/user');
 var airTicketRouter = require('./routes/air-ticket');
 var clubMembershipRouter = require('./routes/club-membership');
-var attendanceRouter = require('./routes/attendance');
+var teamManagement = require('./routes/team-management');
 
 var app = express();
 
@@ -46,6 +46,7 @@ app.use('/api/user', usersRouter);
 app.use('/api/air-ticket', airTicketRouter);
 app.use('/api/club-membership', clubMembershipRouter);
 app.use('/api/attendance', attendanceRouter);
+app.use('/api/team-management', teamManagement);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

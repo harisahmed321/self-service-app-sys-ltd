@@ -124,3 +124,6 @@ temp/
 
 # Local DB
 db
+
+#uploads
+uploads/

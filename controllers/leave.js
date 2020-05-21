@@ -2,8 +2,9 @@ const mongoose = require('mongoose')
   jwt = require('jsonwebtoken')
   LeaveModel = require('../models/leave.model')
   UserModel = require('../models/user.model')
-  QuotaModel = require('../models/quota.model');
-  attachmentCtrl = require('../controllers/attachment');
+  QuotaModel = require('../models/quota.model')
+  attachmentCtrl = require('../controllers/attachment')
+  TeamManagementModel = require('../models/team-management.model');
 const { success, failure } = require('../helpers/response');
 
 
@@ -83,7 +84,7 @@ leavesByEmployee = (req, res, next) => {
   LeaveModel.aggregate(
     [
       {
-        $match : { user: mongoose.Types.ObjectId(userId) }
+        $match : { userId: mongoose.Types.ObjectId(userId) }
       },
       // { $sort : { date : 1 } }, // Sorts the records wrt to date in ascending order
       {
@@ -127,6 +128,67 @@ leavesByEmployee = (req, res, next) => {
 }
 
 
+leavesByTeam = (req, res, next) => {
+  const managerId = process.env.userId;
+  
+  TeamManagementModel.find({ managerId })
+    .then((result) => {
+      let empIds = [];
+      result.forEach(element => {
+        empIds.push(mongoose.Types.ObjectId(element.empId));
+      });
+      fetchLeaveRequest(empIds);
+    })
+    .catch((error) => next(error));
+
+  const fetchLeaveRequest = (ids) => {
+    LeaveModel.aggregate(
+      [
+        {
+          $match : { userId: { $in : ids } }
+        },
+        {
+          $project : {
+            onBehalfLeave: 1,
+            leaveType: 1,
+            currentBalance: 1,
+            startDate: { $dateToString: { format: "%d-%m-%Y", date: "$startDate" } },
+            endDate: { $dateToString: { format: "%d-%m-%Y", date: "$endDate" } },
+            dutyResumptionDate: { $dateToString: { format: "%d-%m-%Y", date: "$dutyResumptionDate" } },
+            remainingBalance: 1,
+            actingEmployee: 1,
+            comments: 1,
+            exitPermitRequired: 1,
+            status: 1,
+            workflowStatus: 1,
+            attachment: 1,
+            userId: 1,
+            requestType: 1
+          }
+        }
+      ]
+    ).then(result => {
+      LeaveModel.populate(
+        result, 
+        {
+          path: "userId",
+          select: {
+            role: 1,
+            email: 1,
+            firstName: 1,
+            lastName: 1,
+            designation: 1
+          }
+        }
+      ).then(popl => {
+        res.status(200).send(success(popl, 'success'));
+      })
+    })
+  }
+
+}
+
+
 getLeavesQuota = (req, res, next) => {
   const userId = process.env.userId;
 
@@ -147,4 +209,4 @@ getLeavesQuota = (req, res, next) => {
 }
 
 
-module.exports = { addRequest, leavesByEmployee, getLeavesQuota };
+module.exports = { addRequest, leavesByEmployee, getLeavesQuota, leavesByTeam };

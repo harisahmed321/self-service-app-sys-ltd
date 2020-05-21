@@ -1,8 +1,0 @@
----------------------------------
-*** Sheet data ***
----------------------------------
-Id , ComplainTypeAreaId , ComplainTypeArea , FeederId , FeederName , StartDateTime , EndDateTime , IsDeleted , CreatedOn , UserId , UserName , RoleName
-2 , 1 , Qasimabad , 5 , Latifabad Feeder , 2020-05-16T12:00:00 , 2020-05-17T18:00:00 , 0 , 2020-05-16T15:01:46.4691815 , 0f42cb46-3c23-46b8-a4ce-6d17cfa5b7c4 , Admin
-3 , 1 , Qasimabad , 5 , Latifabad Feeder , 2020-05-16T12:00:00 , 2020-05-18T18:00:00 , 0 , 2020-05-16T15:01:53.1573933 , 0f42cb46-3c23-46b8-a4ce-6d17cfa5b7c4 , Admin
-1 , 1 , Qasimabad , 5 , Latifabad Feeder , 2020-05-16T09:00:00 , 2020-05-17T13:00:00 , 0 , 2020-05-16T15:01:30.7019119 , 0f42cb46-3c23-46b8-a4ce-6d17cfa5b7c4 , Admin
----------------------------------

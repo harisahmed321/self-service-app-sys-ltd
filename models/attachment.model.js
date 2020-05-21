@@ -16,6 +16,6 @@ const attachmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Attachment = mongoose.model('attachment', attachmentSchema);
+const Attachment = mongoose.model('Attachment', attachmentSchema);
 
 module.exports = Attachment;

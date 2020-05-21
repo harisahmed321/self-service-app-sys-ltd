@@ -30,4 +30,4 @@ const leaveSchema = new schema (
   { timestamps: true }
 );
 
-module.exports = mongoose.model('leave', leaveSchema);
+module.exports = mongoose.model('Leave', leaveSchema);

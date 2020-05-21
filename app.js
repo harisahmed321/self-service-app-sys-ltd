@@ -20,6 +20,7 @@ var leaveRouter = require('./routes/leave');
 var usersRouter = require('./routes/user');
 var airTicketRouter = require('./routes/air-ticket');
 var clubMembershipRouter = require('./routes/club-membership');
+var attendanceRouter = require('./routes/attendance');
 var teamManagement = require('./routes/team-management');
 
 var app = express();

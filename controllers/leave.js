@@ -134,6 +134,7 @@ leavesByTeam = (req, res, next) => {
   TeamManagementModel.find({ managerId })
     .then((result) => {
       let empIds = [];
+      empIds.push(mongoose.Types.ObjectId(managerId)); // also fetch manager leaves
       result.forEach(element => {
         empIds.push(mongoose.Types.ObjectId(element.empId));
       });

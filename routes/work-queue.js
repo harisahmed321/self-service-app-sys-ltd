@@ -9,5 +9,10 @@ router.post(
   workQueueCtrl.getByEmployee
 );
 
+router.post(
+  '/byManager',
+  passport.authenticate('jwt', { session: false }),
+  workQueueCtrl.getByManager
+);
 
 module.exports = router;

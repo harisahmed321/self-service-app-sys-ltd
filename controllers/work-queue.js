@@ -3,165 +3,210 @@ const mongoose = require('mongoose')
   LeaveModel = require('../models/leave.model')
   attachmentCtrl = require('../controllers/attachment')
   ClubMembershipModel = require('../models/club-membership.model')
-  AirTicketModel = require('../models/air-ticket.model');
+  AirTicketModel = require('../models/air-ticket.model')
+  TeamManagementModel = require('../models/team-management.model');
 const { success, failure } = require('../helpers/response');
 
 
 getByEmployee = (req, res, next) => {
   const userId = process.env.userId;
 
-  if (!req.body.filter || req.body.filter == '') {
-    res.status(400).send(failure('filter is required'));
-  } else {
+  Promise.all([
+    fetchLeaveReqs(userId, false),
+    fetchClubMembershipReqs(userId, false),
+    fetchAirTicketReqs(userId, false),
+  ]).then(function(results) {
+      let RECORDS = [];
+      results.forEach((e) => {
+        RECORDS = RECORDS.concat(e);
+      });
+      if (req.body.filterBy == 'request-type') {
+        RECORDS.sort((a,b) => (a.requestType > b.requestType) ? 1 : ((b.requestType > a.requestType) ? -1 : 0)); 
+      } else if (req.body.filterBy == 'date') {
+        RECORDS.sort((a,b) => (a.updatedAt > b.updatedAt) ? 1 : ((b.updatedAt > a.updatedAt) ? -1 : 0)); 
+      }
+      res.send(success(RECORDS, 'success'));
+  });
+}
+
+getByManager = (req, res, next) => {
+  const managerId = process.env.userId;
+
+  TeamManagementModel.find({ managerId })
+    .then((result) => {
+      let empIds = [];
+      empIds.push(mongoose.Types.ObjectId(managerId)); // also fetch manager leaves
+      result.forEach(element => {
+        empIds.push(mongoose.Types.ObjectId(element.empId));
+      });
+      fetchRequests(empIds);
+    })
+    .catch((error) => next(error));
+
+  const fetchRequests = (empIds) => {
     Promise.all([
-      fetchLeaveReqs(userId),
-      fetchClubMembershipReqs(userId),
-      fetchAirTicketReqs(userId),
+      fetchLeaveReqs(empIds, true),
+      fetchClubMembershipReqs(empIds, true),
+      fetchAirTicketReqs(empIds, true),
     ]).then(function(results) {
         let RECORDS = [];
         results.forEach((e) => {
           RECORDS = RECORDS.concat(e);
         });
-        RECORDS.sort((a,b) => (a.requestType > b.requestType) ? 1 : ((b.requestType > a.requestType) ? -1 : 0)); 
-        res.send(RECORDS);
+        if (req.body.filterBy == 'request-type') {
+          RECORDS.sort((a,b) => (a.requestType > b.requestType) ? 1 : ((b.requestType > a.requestType) ? -1 : 0)); 
+        } else if (req.body.filterBy == 'date') {
+          RECORDS.sort((a,b) => (a.updatedAt > b.updatedAt) ? 1 : ((b.updatedAt > a.updatedAt) ? -1 : 0)); 
+        }
+        res.send(success(RECORDS, 'success'));
     });
   }
-
-}
-
-const fetchLeaveReqs = (userId) => {
-  return new Promise((resolve, reject) => {
-    LeaveModel.aggregate(
-      [
-        {
-          $match : { userId: mongoose.Types.ObjectId(userId) }
-        },
-        {
-          $project : {
-            status: 1,
-            workflowStatus: 1,
-            requestType: 1,
-            userId: 1,
-            createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
-          }
-        }
-      ]
-    ).then(result => {
-      resolve(result);
-    })
-  })
-}
-
-const fetchClubMembershipReqs = (userId) => {
-  return new Promise((resolve, reject) => {
-    ClubMembershipModel.aggregate(
-      [
-        {
-          $match : { userId: mongoose.Types.ObjectId(userId) }
-        },
-        {
-          $project : {
-            status: 1,
-            workflowStatus: 1,
-            requestType: 1,
-            userId: 1,
-            createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
-          }
-        }
-      ]
-    ).then(result => {
-      resolve(result);
-    })
-  })
-}
-
-const fetchAirTicketReqs = (userId) => {
-  return new Promise((resolve, reject) => {
-    AirTicketModel.aggregate(
-      [
-        {
-          $match : { userId: mongoose.Types.ObjectId(userId) }
-        },
-        {
-          $project : {
-            status: 1,
-            workflowStatus: 1,
-            requestType: 1,
-            userId: 1,
-            createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
-          }
-        }
-      ]
-    ).then(result => {
-      resolve(result);
-    })
-  })
-}
-
-
-leavesByTeam = (req, res, next) => {
-  const managerId = process.env.userId;
   
-  TeamManagementModel.find({ managerId })
-    .then((result) => {
-      let empIds = [];
-      result.forEach(element => {
-        empIds.push(mongoose.Types.ObjectId(element.empId));
-      });
-      fetchLeaveRequest(empIds);
-    })
-    .catch((error) => next(error));
+}
 
-  const fetchLeaveRequest = (ids) => {
-    LeaveModel.aggregate(
-      [
-        {
-          $match : { userId: { $in : ids } }
-        },
-        {
-          $project : {
-            onBehalfLeave: 1,
-            leaveType: 1,
-            currentBalance: 1,
-            startDate: { $dateToString: { format: "%d-%m-%Y", date: "$startDate" } },
-            endDate: { $dateToString: { format: "%d-%m-%Y", date: "$endDate" } },
-            dutyResumptionDate: { $dateToString: { format: "%d-%m-%Y", date: "$dutyResumptionDate" } },
-            remainingBalance: 1,
-            actingEmployee: 1,
-            comments: 1,
-            exitPermitRequired: 1,
-            status: 1,
-            workflowStatus: 1,
-            attachment: 1,
-            userId: 1,
-            requestType: 1
+const fetchLeaveReqs = (userId, isManager) => {
+  if (isManager) {
+    return new Promise((resolve, reject) => {
+      LeaveModel.aggregate(
+        [
+          {
+            $match : { userId: { $in : userId } }
+          },
+          {
+            $project : {
+              status: 1,
+              workflowStatus: 1,
+              requestType: 1,
+              userId: 1,
+              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+            }
           }
-        }
-      ]
-    ).then(result => {
-      LeaveModel.populate(
-        result, 
-        {
-          path: "userId",
-          select: {
-            role: 1,
-            email: 1,
-            firstName: 1,
-            lastName: 1,
-            designation: 1
+        ]
+      ).then(result => {
+        resolve(result);
+      })
+    })
+  } else {
+    return new Promise((resolve, reject) => {
+      LeaveModel.aggregate(
+        [
+          {
+            $match : { userId: mongoose.Types.ObjectId(userId) }
+          },
+          {
+            $project : {
+              status: 1,
+              workflowStatus: 1,
+              requestType: 1,
+              userId: 1,
+              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+            }
           }
-        }
-      ).then(popl => {
-        res.status(200).send(success(popl, 'success'));
+        ]
+      ).then(result => {
+        resolve(result);
       })
     })
   }
+}
 
+const fetchClubMembershipReqs = (userId, isManager) => {
+  if (isManager) {
+    return new Promise((resolve, reject) => {
+      ClubMembershipModel.aggregate(
+        [
+          {
+            $match : { userId: { $in : userId } }
+          },
+          {
+            $project : {
+              status: 1,
+              workflowStatus: 1,
+              requestType: 1,
+              userId: 1,
+              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+            }
+          }
+        ]
+      ).then(result => {
+        resolve(result);
+      })
+    })
+  } else {
+    return new Promise((resolve, reject) => {
+      ClubMembershipModel.aggregate(
+        [
+          {
+            $match : { userId: mongoose.Types.ObjectId(userId) }
+          },
+          {
+            $project : {
+              status: 1,
+              workflowStatus: 1,
+              requestType: 1,
+              userId: 1,
+              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+            }
+          }
+        ]
+      ).then(result => {
+        resolve(result);
+      })
+    })
+  }
+}
+
+const fetchAirTicketReqs = (userId, isManager) => {
+  if (isManager) {
+    return new Promise((resolve, reject) => {
+      AirTicketModel.aggregate(
+        [
+          {
+            $match : { userId: { $in : userId } }
+          },
+          {
+            $project : {
+              status: 1,
+              workflowStatus: 1,
+              requestType: 1,
+              userId: 1,
+              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+            }
+          }
+        ]
+      ).then(result => {
+        resolve(result);
+      })
+    })
+  } else {
+    return new Promise((resolve, reject) => {
+      AirTicketModel.aggregate(
+        [
+          {
+            $match : { userId: mongoose.Types.ObjectId(userId) }
+          },
+          {
+            $project : {
+              status: 1,
+              workflowStatus: 1,
+              requestType: 1,
+              userId: 1,
+              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+            }
+          }
+        ]
+      ).then(result => {
+        resolve(result);
+      })
+    })
+  }
 }
 
 
-
-module.exports = { getByEmployee };
+module.exports = { getByEmployee, getByManager };

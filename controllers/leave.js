@@ -198,7 +198,7 @@ getLeavesQuota = (req, res, next) => {
     .select('annualLeaves casualLeaves sickLeaves')
     .then(resp => {
       let respFormat = [
-        { leaveType: 'Annaul', quota: resp.annualLeaves },
+        { leaveType: 'Annual', quota: resp.annualLeaves },
         { leaveType: 'Casual', quota: resp.casualLeaves },
         { leaveType: 'Sick', quota: resp.sickLeaves },
       ]

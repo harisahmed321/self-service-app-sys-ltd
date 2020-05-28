@@ -2,20 +2,21 @@ const AirTicketModel = require('../models/air-ticket.model');
 const attachmentCtrl = require('../controllers/attachment');
 create = (req, res, next) => {
   req.body.userId = process.env.userId;
-
   const airTicket = new AirTicketModel(req.body);
   airTicket
     .save()
     .then((result) => {
-      const data = {
-        userId: req.body.userId,
-        requestId: result._id,
-        fileName: req.body.attachment.fileName,
-        fileType: req.body.attachment.fileType,
-        baseString: req.body.attachment.baseString,
-        requestType: 'AIR_TICKET_REQUEST'
-      };
-      attachmentCtrl.create(data);
+      if (req.body.attachment && req.body.attachment.baseString) {
+        const data = {
+          userId: req.body.userId,
+          requestId: result._id,
+          fileName: req.body.attachment.fileName,
+          fileType: req.body.attachment.fileType,
+          baseString: req.body.attachment.baseString,
+          requestType: 'AIR_TICKET_REQUEST',
+        };
+        attachmentCtrl.create(data);
+      }
       res.status(200).send({ message: 'Air ticket created' });
     })
     .catch((error) => {

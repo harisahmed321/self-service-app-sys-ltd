@@ -1,11 +1,17 @@
+const mongoose = require('mongoose');
 const User = require('../models/user.model');
-const jwt = require('jsonwebtoken');
 
 profile = (req, res, next) => {
-  //We'll just send back the user details and the token
-  res.json({
-    message: 'You made it to the secure route',
-  });
+  const userId = process.env.userId;
+
+  User.findOne({ _id: mongoose.Types.ObjectId(userId) })
+    .then((result) => {
+      if (result) {
+        result.password = '';
+      }
+      res.status(200).send(result);
+    })
+    .catch((error) => next(error));
 };
 
 module.exports = { profile };

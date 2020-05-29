@@ -14,7 +14,7 @@ create = (req, res, next) => {
     });
 };
 
-getByDate = (req, res, next) => {
+getByDate = async (req, res, next) => {
   // console.log(req.params);
   const { dateTime } = req.params;
   const startDateTime = moment(
@@ -22,9 +22,14 @@ getByDate = (req, res, next) => {
     'YYYY-MM-DD hh:mm'
   ).format();
   const endDateTime = moment(`${dateTime} 23:59`, 'YYYY-MM-DD hh:mm').format();
-  // console.log(startDateTime, endDateTime);
+
+  const startMonth = new moment(dateTime).startOf('month').format();
+  const endMonth = new moment(dateTime).endOf('month').format();
+  // console.log('currentMonth', startDateTime, endDateTime);
+
   const userId = process.env.userId;
-  CalenderEventModel.find({
+  let calenderEventResult = {};
+  await CalenderEventModel.find({
     $and: [
       { userId },
       {
@@ -35,8 +40,24 @@ getByDate = (req, res, next) => {
       },
     ],
   })
-    .then((result) => res.status(200).send({ result: result }))
+    .then((result) => (calenderEventResult.currentDateEvents = result))
     .catch((error) => next(error));
+
+  await CalenderEventModel.find({
+    $and: [
+      { userId },
+      {
+        dateTime: {
+          $gte: new Date(startMonth),
+          $lte: new Date(endMonth),
+        },
+      },
+    ],
+  })
+    .then((result) => (calenderEventResult.currentMonthEvents = result))
+    .catch((error) => next(error));
+
+  res.status(200).send({ result: calenderEventResult });
 };
 
 remove = (req, res, next) => {

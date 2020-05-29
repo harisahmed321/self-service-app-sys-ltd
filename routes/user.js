@@ -9,4 +9,10 @@ router.get(
   userCtrl.profile
 );
 
+router.get(
+  '/team-profile',
+  passport.authenticate('jwt', { session: false }),
+  userCtrl.teamProfileByManager
+);
+
 module.exports = router;

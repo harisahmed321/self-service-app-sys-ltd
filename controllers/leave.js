@@ -96,13 +96,9 @@ leavesByEmployee = (req, res, next) => {
         onBehalfLeave: 1,
         leaveType: 1,
         currentBalance: 1,
-        startDate: {
-          $dateToString: { format: '%d-%m-%Y', date: '$startDate' },
-        },
-        endDate: { $dateToString: { format: '%d-%m-%Y', date: '$endDate' } },
-        dutyResumptionDate: {
-          $dateToString: { format: '%d-%m-%Y', date: '$dutyResumptionDate' },
-        },
+        startDate: 1,
+        endDate: 1,
+        dutyResumptionDate: 1,
         remainingBalance: 1,
         actingEmployee: 1,
         comments: 1,
@@ -148,13 +144,9 @@ leavesByTeam = (req, res, next) => {
           onBehalfLeave: 1,
           leaveType: 1,
           currentBalance: 1,
-          startDate: {
-            $dateToString: { format: '%d-%m-%Y', date: '$startDate' },
-          },
-          endDate: { $dateToString: { format: '%d-%m-%Y', date: '$endDate' } },
-          dutyResumptionDate: {
-            $dateToString: { format: '%d-%m-%Y', date: '$dutyResumptionDate' },
-          },
+          startDate: 1,
+          endDate: 1,
+          dutyResumptionDate: 1,
           remainingBalance: 1,
           actingEmployee: 1,
           comments: 1,

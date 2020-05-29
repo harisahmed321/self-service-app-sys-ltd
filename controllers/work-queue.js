@@ -78,8 +78,8 @@ const fetchLeaveReqs = (userId, isManager) => {
               workflowStatus: 1,
               requestType: 1,
               userId: 1,
-              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+              createdAt: 1,
+              updatedAt: 1
             }
           }
         ]
@@ -100,8 +100,8 @@ const fetchLeaveReqs = (userId, isManager) => {
               workflowStatus: 1,
               requestType: 1,
               userId: 1,
-              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+              createdAt: 1,
+              updatedAt: 1
             }
           }
         ]
@@ -126,8 +126,8 @@ const fetchClubMembershipReqs = (userId, isManager) => {
               workflowStatus: 1,
               requestType: 1,
               userId: 1,
-              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+              createdAt: 1,
+              updatedAt: 1
             }
           }
         ]
@@ -148,8 +148,8 @@ const fetchClubMembershipReqs = (userId, isManager) => {
               workflowStatus: 1,
               requestType: 1,
               userId: 1,
-              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+              createdAt: 1,
+              updatedAt: 1
             }
           }
         ]
@@ -174,8 +174,8 @@ const fetchAirTicketReqs = (userId, isManager) => {
               workflowStatus: 1,
               requestType: 1,
               userId: 1,
-              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+              createdAt: 1,
+              updatedAt: 1
             }
           }
         ]
@@ -196,8 +196,8 @@ const fetchAirTicketReqs = (userId, isManager) => {
               workflowStatus: 1,
               requestType: 1,
               userId: 1,
-              createdAt: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-              updatedAt: { $dateToString: { format: "%d-%m-%Y", date: "$updatedAt" } }
+              createdAt: 1,
+              updatedAt: 1
             }
           }
         ]

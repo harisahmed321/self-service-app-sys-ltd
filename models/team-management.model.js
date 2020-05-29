@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 
 const teamManagement = new mongoose.Schema(
   {
+    teamName: { type: String },
+    teamDesc: { type: String },
     managerId: { type: schema.Types.ObjectId, ref: 'User', required: true },
-    empId: { type: schema.Types.ObjectId, ref: 'User', required: true },
+    empIds: [{ type: schema.Types.ObjectId, ref: 'User', required: true }],
     userId: { type: schema.Types.ObjectId, ref: 'User', required: true },
     isActive: { type: Boolean, default: true },
   },

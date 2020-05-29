@@ -14,25 +14,4 @@ create = (req, res, next) => {
     });
 };
 
-getAll = (req, res, next) => {
-  console.log(req.params);
-  const { managerId } = req.params;
-  TeamManagementModel.find({ managerId })
-    .then((result) => res.status(200).send({ result: result }))
-    .catch((error) => next(error));
-};
-
-remove = (req, res, next) => {
-  console.log(req.params);
-  // const airTicket = new AirTicketModel(req.body);
-  // airTicket
-  //   .save()
-  //   .then(() => {
-  //     res.status(200).send({ message: 'Air ticket created' });
-  //   })
-  //   .catch((error) => {
-  //     next(error);
-  //   });
-};
-
 module.exports = { create, remove, getAll };

@@ -24,6 +24,7 @@ var attendanceRouter = require('./routes/attendance');
 var teamManagement = require('./routes/team-management');
 var workQueue = require('./routes/work-queue');
 var calenderEvent = require('./routes/calender-event');
+var docIssuanceReq = require('./routes/doc-issuance-req');
 
 var app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/attendance', attendanceRouter);
 app.use('/api/team-management', teamManagement);
 app.use('/api/work-queue', workQueue);
 app.use('/api/calender-event', calenderEvent);
+app.use('/api/doc-issuance-req', docIssuanceReq);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

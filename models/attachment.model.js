@@ -6,8 +6,16 @@ const attachmentSchema = new mongoose.Schema(
     requestId: { type: schema.Types.ObjectId, required: true },
     requestType: {
       type: String,
-      enum: ['AIR_TICKET_REQUEST', 'CLUB_MEMBERSHIP_ALLOWANCE_REQUEST', 'DOCUMENT_ISSUANCE_REQUEST', 'ANNUAL_LEAVE_REQUEST', 'CASUAL_LEAVE_REQUEST', 'SICK_LEAVE_REQUEST'],
-      required: true
+      enum: [
+        'AIR_TICKET_REQUEST',
+        'CLUB_MEMBERSHIP_ALLOWANCE_REQUEST',
+        'DOCUMENT_ISSUANCE_REQUEST',
+        'ANNUAL_LEAVE_REQUEST',
+        'CASUAL_LEAVE_REQUEST',
+        'SICK_LEAVE_REQUEST',
+        'DOC_ISSUANCE_REQ',
+      ],
+      required: true,
     },
     uuidFileName: { type: String, required: true },
     fileName: { type: String, required: true },

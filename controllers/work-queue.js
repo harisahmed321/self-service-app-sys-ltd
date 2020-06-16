@@ -4,6 +4,7 @@ LeaveModel = require('../models/leave.model');
 attachmentCtrl = require('../controllers/attachment');
 ClubMembershipModel = require('../models/club-membership.model');
 AirTicketModel = require('../models/air-ticket.model');
+DocIssuanceReqModel = require('../models/doc-issuance-req.model');
 TeamManagementModel = require('../models/team-management.model');
 const { success, failure } = require('../helpers/response');
 
@@ -14,6 +15,7 @@ getByEmployee = (req, res, next) => {
     fetchLeaveReqs(userId, false),
     fetchClubMembershipReqs(userId, false),
     fetchAirTicketReqs(userId, false),
+    fetchDocIssuanceReqs(userId, false),
   ]).then(function (results) {
     let RECORDS = [];
     results.forEach((e) => {
@@ -50,6 +52,7 @@ getByManager = (req, res, next) => {
       fetchLeaveReqs(empIds, true),
       fetchClubMembershipReqs(empIds, true),
       fetchAirTicketReqs(empIds, true),
+      fetchDocIssuanceReqs(empIds, true),
     ]).then(function (results) {
       let RECORDS = [];
       results.forEach((e) => {
@@ -185,6 +188,50 @@ const fetchAirTicketReqs = (userId, isManager) => {
   } else {
     return new Promise((resolve, reject) => {
       AirTicketModel.aggregate([
+        {
+          $match: { userId: mongoose.Types.ObjectId(userId) },
+        },
+        {
+          $project: {
+            status: 1,
+            workflowStatus: 1,
+            requestType: 1,
+            userId: 1,
+            createdAt: 1,
+            updatedAt: 1,
+          },
+        },
+      ]).then((result) => {
+        resolve(result);
+      });
+    });
+  }
+};
+
+const fetchDocIssuanceReqs = (userId, isManager) => {
+  if (isManager) {
+    return new Promise((resolve, reject) => {
+      DocIssuanceReqModel.aggregate([
+        {
+          $match: { userId: { $in: userId } },
+        },
+        {
+          $project: {
+            status: 1,
+            workflowStatus: 1,
+            requestType: 1,
+            userId: 1,
+            createdAt: 1,
+            updatedAt: 1,
+          },
+        },
+      ]).then((result) => {
+        resolve(result);
+      });
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      DocIssuanceReqModel.aggregate([
         {
           $match: { userId: mongoose.Types.ObjectId(userId) },
         },
